@@ -1,5 +1,7 @@
 {
   "name": "radarPet",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
