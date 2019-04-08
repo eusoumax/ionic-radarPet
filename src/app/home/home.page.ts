@@ -1,17 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { polyline, latLng, tileLayer,point, Map as lfMap,icon,marker,FeatureGroup,polygon,geoJSON} from 'leaflet';
 import * as L from 'leaflet';
 //import { } from '@types/leaflet';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Toast } from '@ionic-native/toast/ngx';
+import { GpsService } from '../../app/api/gps.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
-
-  
+export class HomePage implements OnInit{
 
   public funMap: lfMap;
 
@@ -103,4 +105,85 @@ export class HomePage {
     zoom: 11,
     center: latLng([-22.878705724951253, -43.233261108398445])
   };
+
+  constructor(
+    private gpsService: GpsService,
+    private geolocation: Geolocation,
+    private toast: Toast) {
+
+  }
+
+  ngOnInit(){
+
+
+    this.geolocation.getCurrentPosition().then((resp) => {
+        
+      this.toast.show(`Atual - longitude:${resp.coords.longitude} || latitude:${resp.coords.latitude}`, '5000', 'center').subscribe(
+        toast => {
+          console.log(`resultado do servidor:${toast}`);
+        }
+      );
+       // setTimeout(()=>{
+       //   console.log(resp);
+       //   this.toast.show
+       // }, 10000);
+      // resp.coords.latitude
+      // resp.coords.longitude
+       }).catch((error) => {
+       console.log('Error getting location', error);
+     });
+     
+     let watch = this.geolocation.watchPosition();
+     watch.subscribe((data) => {
+       //setTimeout(()=>{
+       //  console.log(data);
+       // }, 10000);
+
+       this.gpsService.salvarPontoAtual({
+        "dataAtual":moment().toDate(),
+        "longitude": data.coords.longitude,
+        "latitude": data.coords.latitude,
+          }).subscribe((data:any) => {
+            this.toast.show(data, '5000', 'center');
+          },(error)=>{
+            this.toast.show(error, '5000', 'center');
+          });
+          this.toast.show(`longitude:${data.coords.longitude} || latitude:${data.coords.latitude}`, '5000', 'center').subscribe(
+            toast => {
+              console.log(`resultado do servidor:${JSON.stringify(toast)}`);
+            
+            }
+      );
+      // data can be a set of coordinates, or an error (if an error occurred).
+      // data.coords.latitude
+      // data.coords.longitude
+     });
+    
+  }
+  
+
+  enviarPonto(){
+    this.gpsService.enviarPonto().subscribe((data:any) => {
+          this.toast.show(`resposta do servidor: ${JSON.stringify(data)}`, '5000', 'center');
+        },(error)=>{
+          this.toast.show(`erro: ${error}`, '5000', 'center');
+        }        
+    );
+  }
+
+  enviarPonto2(){
+
+  //this.geolocation.getCurrentPosition().then((resp) => {
+  //      console.log("resp",resp);
+        this.gpsService.enviarPonto2({"horaAtual":moment().toDate()}).subscribe((data:any) => {
+              this.toast.show(`resposta do servidor: ${JSON.stringify(data)}`, '5000', 'center');
+            },(error)=>{
+              this.toast.show(`enviarPonto2 - erro: ${error}`, '5000', 'center');
+            }        
+        );
+  //    }),(error:any) => {
+  //    console.log('Error getting location', error);
+  //  };
+
+  }
 }

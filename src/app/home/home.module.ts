@@ -18,7 +18,9 @@ import {LeafletModule} from '@asymmetrik/ngx-leaflet'
         component: HomePage
       }
     ]),
-    LeafletModule
+    LeafletModule,
+    //Geolocation
+
   ],
   declarations: [HomePage]
 })

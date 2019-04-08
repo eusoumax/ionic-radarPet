@@ -10,4 +10,8 @@
   <div  class="map" #funMap leaflet  [leafletOptions]="options"  [leafletLayersControl]="layersControl" >
     
   </div>
+  <div class="col-md-4" style="text-align: center;">
+    <ion-button color="primary" (click)="enviarPonto()">Ponto atual</ion-button>
+    <ion-button color="primary" (click)="enviarPonto2()">Ponto atual2</ion-button>
+  </div>
 </ion-content>

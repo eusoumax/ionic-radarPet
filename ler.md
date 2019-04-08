@@ -47,3 +47,8 @@ npm install @asymmetrik/ngx-leaflet-draw
     }
 
 ],
++++++++++++++++++++++++++++++++++++++++++++
+
+ionic cordova platform --help
+
+ionic cordova run
