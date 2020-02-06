@@ -58,3 +58,6 @@ ionic generate service api/gps
 
 npm install moment --save
 + moment@2.24.0
+
+
+teste
